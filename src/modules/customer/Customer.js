@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import CustomerAdd from './CustomerAdd';
+import CustomerEdit from './CustomerEdit';
 
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
@@ -7,10 +8,12 @@ const dummyData = [
     {customer_id: 1, name: "Sedka Plast"},
     {customer_id: 2, name: "Melantis"},
     {customer_id: 3, name: "Xhelenga"}
-]
+];
 
 function Customer(props) {
+    const [showForm, setShowForm] = useState("add");
     const [customerList, setCustomerList] = useState(dummyData);
+    const [customerDataForEdit, setCustomerDataForEdit] = useState({});
     /*
     useEffect(() => {
         fetchCustomerList()
@@ -29,18 +32,52 @@ function Customer(props) {
         setCustomerList([...customerList, newCustomer]);
     }
 
+    const startEditing = (customerID) => {
+        let selectedCustomerData = customerList.filter((customerObj) => customerObj.customer_id === customerID);
+        setCustomerDataForEdit(selectedCustomerData[0])
+        setShowForm("edit");
+    }
+
+    const completeEditing = (editedData) => {
+        let customerListClone = customerList;
+        let customerListUpdated = customerListClone.map(customer => {
+            if(customer.customer_id === editedData.customer_id){
+                customer.name = editedData.name;
+            }
+            return customer;
+        });
+
+        setCustomerList(customerListUpdated);
+        setShowForm("add");
+    }
+
+    const completeDelete = (customerID) => {
+        let customerListClone = customerList;
+        let customerListUpdated = customerListClone.filter(customer => customer.customer_id !== customerID);
+        setCustomerList(customerListUpdated);
+    }
+
     return (
         <div>
-            <CustomerAdd updateCustomerList={(customerData) => updateCustomerList(customerData)} />
+            {showForm === "add" && 
+                <CustomerAdd updateCustomerList={(customerData) => updateCustomerList(customerData)} />
+            }
+            {showForm === "edit" && 
+                <CustomerEdit customerData={customerDataForEdit} 
+                    changeShowForm={(formName) => setShowForm(formName)}
+                    completeEditing={(editedData) => completeEditing(editedData)}
+                />
+            }
+            
             { customerList && customerList.length < 1 && 
-                <div>Görüntülenecek Müşteri Yok</div>
+                <div>Görüntülenecek Firma Yok</div>
             }
             <div className="flex justify-center my-2 ">
                 <table className="table-auto w-1/2 bg-slate-700 text-white p-2 rounded border-collapse border  border-slate-600">
                     <thead>
                         <tr>
-                            <th className="border border-slate-500 bg-slate-400">Müşteri ID</th>
-                            <th className="border border-slate-500 bg-slate-400">Müşteri Adı</th>
+                            <th className="border border-slate-500 bg-slate-400">Firma ID</th>
+                            <th className="border border-slate-500 bg-slate-400">Firma Adı</th>
                             <th className="border border-slate-500 bg-slate-400"></th>
                             <th className="border border-slate-500 bg-slate-400"></th>
                         </tr>
@@ -51,8 +88,14 @@ function Customer(props) {
                             return <tr key={customer.customer_id}>
                                 <td className="text-center border border-slate-600 py-1">{customer.customer_id}</td>
                                 <td className="text-center border border-slate-600 py-1">{customer.name}</td>
-                                <td className="text-center border border-slate-600 py-1"><button className="text-sky-500 text-2xl"><FaEdit /></button></td>
-                                <td className="text-center border border-slate-600 py-1"><button className="text-red-500 text-2xl"><FaTrashAlt /></button></td>
+                                <td className="text-center border border-slate-600 py-1">
+                                    <button className="text-sky-500 text-2xl"
+                                        onClick={() => startEditing(customer.customer_id)}><FaEdit /></button>
+                                </td>
+                                <td className="text-center border border-slate-600 py-1">
+                                    <button className="text-red-500 text-2xl"
+                                        onClick={() => completeDelete(customer.customer_id)}><FaTrashAlt /></button>
+                                </td>
                             </tr>
                         })
                     }
