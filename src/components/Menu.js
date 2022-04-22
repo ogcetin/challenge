@@ -15,7 +15,7 @@ const Menu = (props) => {
         <div className='py-5 h-20'>
             <h1 className="text-center font-bold text-2xl">Challenge CRM</h1>
         </div>
-        <div className="h-3 bg-slate-800" />
+        <div className="h-3 bg-white" />
         <div className="my-5">
             <nav className="">
                 <ul className="text-center">

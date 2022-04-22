@@ -73,34 +73,36 @@ function Customer(props) {
                 <div>Görüntülenecek Firma Yok</div>
             }
             <div className="flex justify-center my-2 ">
-                <table className="table-auto w-1/2 bg-slate-700 text-white p-2 rounded border-collapse border  border-slate-600">
-                    <thead>
-                        <tr>
-                            <th className="border border-slate-500 bg-slate-400">Firma ID</th>
-                            <th className="border border-slate-500 bg-slate-400">Firma Adı</th>
-                            <th className="border border-slate-500 bg-slate-400"></th>
-                            <th className="border border-slate-500 bg-slate-400"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    { customerList && customerList.length > 0 && 
-                        customerList.map((customer, index) => {
-                            return <tr key={customer.customer_id}>
-                                <td className="text-center border border-slate-600 py-1">{customer.customer_id}</td>
-                                <td className="text-center border border-slate-600 py-1">{customer.name}</td>
-                                <td className="text-center border border-slate-600 py-1">
-                                    <button className="text-sky-500 text-2xl"
-                                        onClick={() => startEditing(customer.customer_id)}><FaEdit /></button>
-                                </td>
-                                <td className="text-center border border-slate-600 py-1">
-                                    <button className="text-red-500 text-2xl"
-                                        onClick={() => completeDelete(customer.customer_id)}><FaTrashAlt /></button>
-                                </td>
+                <div className="w-1/2  rounded bg-white-transparent">
+                    <table className="table-auto p-2 w-full border-collapse border  border-slate-600">
+                        <thead>
+                            <tr>
+                                <th className="border border-white bg-slate-50">Firma ID</th>
+                                <th className="border border-white bg-slate-50">Firma Adı</th>
+                                <th className="border border-white bg-slate-50"></th>
+                                <th className="border border-white bg-slate-50"></th>
                             </tr>
-                        })
-                    }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        { customerList && customerList.length > 0 && 
+                            customerList.map((customer, index) => {
+                                return <tr key={customer.customer_id}>
+                                    <td className="text-center border border-white py-1">{customer.customer_id}</td>
+                                    <td className="text-center border border-white py-1">{customer.name}</td>
+                                    <td className="text-center border border-white py-1">
+                                        <button className="text-sky-500 text-2xl"
+                                            onClick={() => startEditing(customer.customer_id)}><FaEdit /></button>
+                                    </td>
+                                    <td className="text-center border border-white py-1">
+                                        <button className="text-red-500 text-2xl"
+                                            onClick={() => completeDelete(customer.customer_id)}><FaTrashAlt /></button>
+                                    </td>
+                                </tr>
+                            })
+                        }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     )

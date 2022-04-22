@@ -14,7 +14,7 @@ const CustomerAdd = (props) => {
         setName("");
     }
     
-    return <div className="w-1/2 mx-auto my-2 my-auto p-5 bg-slate-700 text-white rounded">
+    return <div className="w-1/2 mx-auto my-2 my-auto p-5  bg-white-transparent rounded">
         <form onSubmit={(e) => sendForm(e)}>
             <div className="p-2 rounded flex justify-center">
                 <h1 className="text-2xl font-bold">Yeni Firma Ekle</h1>

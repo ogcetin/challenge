@@ -59,40 +59,42 @@ const Data = () => {
             {dataList && dataList.length < 1 && 
                 <div>Görüntülenecek Müşteri Yok</div>
             }
-            <div className="flex justify-center my-2">
-                <table className="text-white table-auto w-1/2 border p-2 border-collapse border-slate-600">
-                    <thead>
-                        <tr>
-                            <th className="border border-slate-500 bg-slate-400">Müşteri ID</th>
-                            <th className="border border-slate-500 bg-slate-400">Firma ID</th>
-                            <th className="border border-slate-500 bg-slate-400">Müşteri Adı</th>
-                            <th className="border border-slate-500 bg-slate-400">Telefon</th>
-                            <th className="border border-slate-500 bg-slate-400">E-Posta Adresi</th>
-                            <th className="border border-slate-500 bg-slate-400" colSpan="2">&nbsp;</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {dataList && dataList.length > 0 &&
-                            dataList.map((data, index) => {
-                                return <tr key={index}>
-                                    <td className="text-center border border-slate-600 py-1">{data.data_id}</td>
-                                    <td className="text-center border border-slate-600 py-1">{data.customer_id}</td>
-                                    <td className="text-center border border-slate-600 py-1">{data.name}</td>
-                                    <td className="text-center border border-slate-600 py-1">{data.phone}</td>
-                                    <td className="text-center border border-slate-600 py-1">{data.email}</td>
-                                    <td className="text-center border border-slate-600 py-1">
-                                        <button className="text-sky-500 text-2xl"
-                                            onClick={() => startEditing(data.data_id)}><FaEdit /></button>
-                                    </td>
-                                    <td className="text-center border border-slate-600 py-1">
-                                    <button className="text-red-500 text-2xl"
-                                        onClick={() => completeDelete(data.data_id)}><FaTrashAlt /></button>
-                                    </td>
-                                </tr>
-                            })
-                        }
-                    </tbody>
-                </table>
+            <div className="flex justify-center my-2 ">
+                <div className="w-1/2  rounded bg-white-transparent">
+                    <table className="table-auto w-full border p-2 border-collapse border-slate-600">
+                        <thead>
+                            <tr>
+                                <th className="border border-white bg-slate-50">Müşteri ID</th>
+                                <th className="border border-white bg-slate-50">Firma ID</th>
+                                <th className="border border-white bg-slate-50">Müşteri Adı</th>
+                                <th className="border border-white bg-slate-50">Telefon</th>
+                                <th className="border border-white bg-slate-50">E-Posta Adresi</th>
+                                <th className="border border-white bg-slate-50" colSpan="2">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {dataList && dataList.length > 0 &&
+                                dataList.map((data, index) => {
+                                    return <tr key={index}>
+                                        <td className="text-center border border-white py-1">{data.data_id}</td>
+                                        <td className="text-center border border-white py-1">{data.customer_id}</td>
+                                        <td className="text-center border border-white py-1">{data.name}</td>
+                                        <td className="text-center border border-white py-1">{data.phone}</td>
+                                        <td className="text-center border border-white py-1">{data.email}</td>
+                                        <td className="text-center border border-white py-1">
+                                            <button className="text-sky-500 text-2xl"
+                                                onClick={() => startEditing(data.data_id)}><FaEdit /></button>
+                                        </td>
+                                        <td className="text-center border border-white py-1">
+                                        <button className="text-red-500 text-2xl"
+                                            onClick={() => completeDelete(data.data_id)}><FaTrashAlt /></button>
+                                        </td>
+                                    </tr>
+                                })
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );
