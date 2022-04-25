@@ -5,6 +5,7 @@ import UserLogin from './modules/user/UserLogin';
 import Password from './modules/user/Password';
 import Data from './modules/data/Data';
 import Activity from './modules/activity/Activity';
+import User from './modules/user/User';
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
@@ -24,6 +25,7 @@ function App() {
             <div className="h-3 bg-white" />
             <div className="content py-5 h-full">
               { selectedComponent === "password" && <Password /> }
+              { selectedComponent === "user" && <User /> }
               { selectedComponent === "customer" && <Customer /> }
               { selectedComponent === "data" && <Data /> }
               { selectedComponent === "activity" && <Activity /> }

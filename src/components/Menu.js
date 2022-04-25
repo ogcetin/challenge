@@ -19,9 +19,15 @@ const Menu = (props) => {
         <div className="my-5">
             <nav className="">
                 <ul className="text-center">
-                    <li className="py-2">
-                        <a href="#" onClick={() => changeActiveMenu("password")} className={(menuActive === "password")?"font-bold":""}>
+                    <li className={(menuActive === "password")?"py-2 bg-red-100 flex flex-column":"py-2 flex flex-column"}>
+                        <div className={(menuActive === "password")?"bg-red-400 w-3 h-10":"w-3 h-10"} />
+                        <a href="#" onClick={() => changeActiveMenu("password")} className={(menuActive === "password")?"font-bold flex items-center justify-center grow":"flex items-center justify-center grow"}>
                             Şifre İşlemleri
+                        </a>
+                    </li>
+                    <li className="py-2">
+                        <a href="#" onClick={() => changeActiveMenu("user")} className={(menuActive === "user")?"font-bold":""}>
+                            Kullanıcı İşlemleri
                         </a>
                     </li>
                     <li className="py-2">
