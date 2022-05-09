@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import UserAdd from './UserAdd';
 import UserEdit from './UserEdit';
 import { AUTH_LIST } from '../../helpers/StaticData';
+import Request from '../../helpers/Request';
 
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
@@ -16,22 +17,24 @@ function User(props) {
     const [userForEdit, setUserForEdit] = useState({});
 
     useEffect(() => {
-        (async () => {
-            const request = await fetch("http://127.0.0.1:8000/api/users/");
-            const response = await request.json();
-            console.log("UserList", response);
-            const edited = response.map(user => {
-                const filtered = AUTH_LIST.filter(auth => auth.value == user.auth);
-                user.auth = filtered[0].name
-                return user;
-            })
-            setUserList(edited);
-
-        })();
+        getUserList();
     }, [props]);
 
-    const updateUserList = (newData) => {
-        setUserList([...userList, newData]);
+    const getUserList = async () => {
+
+        const response = await Request.Get("users");
+        console.log("UserList", response);
+        const edited = response.map(user => {
+            const filtered = AUTH_LIST.filter(auth => auth.value == user.auth);
+            user.auth_converted = filtered[0].name
+            return user;
+        })
+        setUserList(edited);
+        setShowForm("add");
+    }
+
+    const updateUserList = () => {
+        getUserList();
     }
 
     const startEditing = (userID) => {
@@ -41,39 +44,26 @@ function User(props) {
         setShowForm("edit");
     }
 
-    const completeEditing = (editedUser) => {
-        let userListClone = userList;
-        let userListUpdated = userListClone.map(user => {
-            if(user.user_id === editedUser.user_id){
-                user.name = editedUser.name;
-            }
-            return user;
-        });
-
-        setUserList(userListUpdated);
-        setShowForm("add");
+    const completeEditing = () => {
+        getUserList();
     }
 
     const completeDelete = async (userID) => {
-        const request = await fetch("http://127.0.0.1:8000/api/users/" + userID + "/", {"method": "DELETE"});
-        if(request.status === 204){
-            let userListClone = userList;
-            let userListUpdated = userListClone.filter(user => user.user_id !== userID);
-            setUserList(userListUpdated);
-        }
+        const response = await Request.Delete("users", userID);
+        getUserList();
     }
 
     return (
         <div>
             { showForm === "add" && 
-                <UserAdd updateUserList={(data) => updateUserList(data)} />
+                <UserAdd updateUserList={() => updateUserList()} />
             }
             {
                 showForm === "edit" &&
                 <UserEdit 
                     data={userForEdit} 
                     changeShowForm={(formName) => setShowForm(formName)}
-                    completeEditing={(editedUser) => completeEditing(editedUser)}
+                    completeEditing={() => completeEditing()}
                 />
             }
             <div className="flex justify-center my-2 ">
@@ -97,7 +87,7 @@ function User(props) {
                                         <td className="text-center border border-white py-1">{user.customer_id}</td>
                                         <td className="text-center border border-white py-1">{user.name}</td>
                                         <td className="text-center border border-white py-1">{user.email}</td>
-                                        <td className="text-center border border-white py-1">{user.auth}</td>
+                                        <td className="text-center border border-white py-1">{user.auth_converted}</td>
                                         <td className="text-center border border-white py-1">
                                             <button className="text-sky-500 text-2xl"
                                                 onClick={() => startEditing(user.user_id)}><FaEdit /></button>

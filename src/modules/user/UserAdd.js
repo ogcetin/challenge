@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Request from '../../helpers/Request';
 import { AUTH_LIST } from '../../helpers/StaticData';
 
 function UserAdd(props) {
@@ -23,18 +24,17 @@ function UserAdd(props) {
 
     async function sendForm(e){
         e.preventDefault();
-        const request = await fetch("http://127.0.0.1:8000/api/users/", {
-            "method": "POST",
-            "headers": {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                customer_id: customerID,
-                name, email, password, auth
-            })
+        console.log("this is customerID", customerID)
+        if(customerID === 0 || auth === 0){
+            // TODO Do something useful
+            console.error("where is your customer_id");
+            return false;
+        }
+        const response = await Request.Post("users", {
+            customer_id: customerID,
+            name, email, password, auth
         });
-        const response = await request.json();
-        console.log("User Add", response)
+        props.updateUserList();
     }
 
     return (
@@ -47,6 +47,7 @@ function UserAdd(props) {
                     <h1 className="font-bold">Firma</h1>
                     <div>
                         <select className="w-full p-3 bg-white text-black" onChange={(e) => setCustomerID(e.target.value)}>
+                            <option value="0">Seçiniz</option>
                             { customerList && customerList.length > 0 && customerList.map((customer) => {
                                 return <option key={customer.customer_id} value={customer.customer_id}>{customer.name}</option>
                             })}
@@ -69,6 +70,7 @@ function UserAdd(props) {
                     <h1 className="font-bold">Yetki</h1>
                     <div>
                         <select className="w-full p-3 bg-white text-black" onChange={(e) => setAuth(e.target.value)}>
+                            <option value="0">Seçiniz</option>
                             { AUTH_LIST && AUTH_LIST.length > 0 && AUTH_LIST.map((auth) => {
                                 return <option key={auth.value} value={auth.value}>{auth.name}</option>
                             })}

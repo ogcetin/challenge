@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
+import Request from '../../helpers/Request';
 
 const CustomerAdd = (props) => {
 
     const [name, setName] = useState("");
 
-    const sendForm = (e) => {   
+    const sendForm = async (e) => {   
         e.preventDefault();
-
-        props.updateCustomerList({
-            customer_id: (Math.floor(Math.random() * (100- 4) ) + 4),
-            name
-        });
+        const response = await Request.Post("customers", {name});
+        props.updateCustomerList();
         setName("");
     }
     

@@ -1,10 +1,5 @@
-import React, { useState } from 'react';
-
-const dummyCustomerList = [
-    {customer_id: 1, name: "Sedka Plast"},
-    {customer_id: 2, name: "Melantis"},
-    {customer_id: 3, name: "Xhelenga"}
-];
+import React, { useState, useEffect } from 'react';
+import Request from '../../helpers/Request';
 
 const DataAdd = (props) => {
 
@@ -12,21 +7,28 @@ const DataAdd = (props) => {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [email, setEmail] = useState("");
+    const [customerList, setCustomerList] = useState([]);
 
-    const sendForm = (e) => {   
+    useEffect(() => {
+        getCustomerList();
+    }, [props])
+    
+    const getCustomerList = async () => {
+        const response = await Request.Get("customers");
+        setCustomerList(response);
+    }
+
+    const sendForm = async (e) => {   
         e.preventDefault();
 
-        props.updateDataList({
-            data_id: (Math.floor(Math.random() * (100- 4) ) + 4),
+        const response = await Request.Post("datas", {
             customer_id: customerID,
             name,
             phone,
             email
         });
-        setCustomerID("1");
-        setName("");
-        setPhone("");
-        setEmail("");
+
+        props.updateDataList();
     }
     
     return <div className="w-1/2 mx-auto my-2 my-auto p-5 bg-white-transparent rounded">
@@ -38,7 +40,8 @@ const DataAdd = (props) => {
                 <h1 className="font-bold">Firma</h1>
                 <div>
                     <select className="w-full p-3 bg-white text-black" onChange={(e) => setCustomerID(e.target.value)}>
-                        { dummyCustomerList && dummyCustomerList.map((customer) => {
+                        <option value="0">Seçiniz</option>
+                        { customerList && customerList.map((customer) => {
                             return <option key={customer.customer_id} value={customer.customer_id}>{customer.name}</option>
                         })}
                     </select>

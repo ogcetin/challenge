@@ -3,33 +3,25 @@ import CustomerAdd from './CustomerAdd';
 import CustomerEdit from './CustomerEdit';
 
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
-
-const dummyData = [
-    {customer_id: 1, name: "Sedka Plast"},
-    {customer_id: 2, name: "Melantis"},
-    {customer_id: 3, name: "Xhelenga"}
-];
+import Request from '../../helpers/Request';
 
 function Customer(props) {
     const [showForm, setShowForm] = useState("add");
-    const [customerList, setCustomerList] = useState(dummyData);
+    const [customerList, setCustomerList] = useState([]);
     const [customerDataForEdit, setCustomerDataForEdit] = useState({});
-    /*
+    
     useEffect(() => {
-        fetchCustomerList()
-
+        getCustomerList()
     }, [props]);
 
-    const fetchCustomerList = async () => {
-        const response = await fetch("http://127.0.0.1:8000/customers/");
-        const responseJson = await response.json();
-
-        setCustomerList(responseJson)
+    const getCustomerList = async () => {
+        const response = await Request.Get("customers");
+        setCustomerList(response);
+        setShowForm("add");
     }
-    */
-
-    const updateCustomerList = (newCustomer) => {
-        setCustomerList([...customerList, newCustomer]);
+    
+    const updateCustomerList = () => {
+        getCustomerList();
     }
 
     const startEditing = (customerID) => {
@@ -38,34 +30,24 @@ function Customer(props) {
         setShowForm("edit");
     }
 
-    const completeEditing = (editedData) => {
-        let customerListClone = customerList;
-        let customerListUpdated = customerListClone.map(customer => {
-            if(customer.customer_id === editedData.customer_id){
-                customer.name = editedData.name;
-            }
-            return customer;
-        });
-
-        setCustomerList(customerListUpdated);
-        setShowForm("add");
+    const completeEditing = () => {
+        getCustomerList();
     }
 
-    const completeDelete = (customerID) => {
-        let customerListClone = customerList;
-        let customerListUpdated = customerListClone.filter(customer => customer.customer_id !== customerID);
-        setCustomerList(customerListUpdated);
+    const completeDelete = async (customerID) => {
+        const response = await Request.Delete("customers", customerID);
+        getCustomerList();
     }
 
     return (
         <div>
             {showForm === "add" && 
-                <CustomerAdd updateCustomerList={(customerData) => updateCustomerList(customerData)} />
+                <CustomerAdd updateCustomerList={() => updateCustomerList()} />
             }
             {showForm === "edit" && 
                 <CustomerEdit customerData={customerDataForEdit} 
                     changeShowForm={(formName) => setShowForm(formName)}
-                    completeEditing={(editedData) => completeEditing(editedData)}
+                    completeEditing={() => completeEditing()}
                 />
             }
             

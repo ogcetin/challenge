@@ -1,16 +1,13 @@
 import React, {useState} from 'react';
+import Request from '../../helpers/Request';
 
 function CustomerEdit(props) {
     const [name, setName] = useState(props.customerData.name);
 
-    const sendForm = (e) => {   
+    const sendForm = async (e) => {   
         e.preventDefault();
-        const customerID = props.customerData.customer_id;
-
-        props.completeEditing({
-            customer_id: customerID,
-            name
-        });
+        const response = await Request.Put("customers", props.customerData.customer_id, {name})
+        props.completeEditing();
         setName("");
     }
     

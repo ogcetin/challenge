@@ -1,4 +1,5 @@
 import React, { useState, useEffect} from 'react';
+import Request from '../../helpers/Request';
 import { AUTH_LIST } from '../../helpers/StaticData';
 
 function UserEdit(props) {
@@ -13,8 +14,7 @@ function UserEdit(props) {
     useEffect(() => {
 
         (async () => {
-            const request = await fetch("http://127.0.0.1:8000/api/customers/");
-            const response = await request.json();
+            const response = await Request.Get("customers");
             console.log("Customer List", response);
             setCustomerList(response);
         })();
@@ -23,18 +23,12 @@ function UserEdit(props) {
 
     async function sendForm(e){
         e.preventDefault();
-        const request = await fetch("http://127.0.0.1:8000/api/users/"+props.data.user_id+"/", {
-            "method": "PUT",
-            "headers": {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                customer_id: customerID,
-                name, email, password, auth
-            })
-        });
-        const response = await request.json();
+        const response = await Request.Put("users", props.data.user_id, {
+            customer_id: customerID,
+            name, email, password, auth
+        })
         console.log("User Edit", response);
+        props.completeEditing();
     }
 
     return (

@@ -1,25 +1,30 @@
-import React, {useState} from 'react';
-const dummyCustomerList = [
-    {customer_id: 1, name: "Sedka Plast"},
-    {customer_id: 2, name: "Melantis"},
-    {customer_id: 3, name: "Xhelenga"}
-];
+import React, {useState ,useEffect} from 'react';
+import Request from '../../helpers/Request';
 
 function DataEdit(props) {
     const [customerID, setCustomerID] = useState(props.data.customer_id);
     const [name, setName] = useState(props.data.name);
     const [phone, setPhone] = useState(props.data.phone);
     const [email, setEmail] = useState(props.data.email);
+    const [customerList, setCustomerList] = useState([]);
 
-    const sendForm = (e) => {   
+    useEffect(() => {
+        getCustomerList();
+    }, [props])
+    
+    const getCustomerList = async () => {
+        const response = await Request.Get("customers");
+        setCustomerList(response);
+    }
+
+    const sendForm = async (e) => {   
         e.preventDefault();
-        const dataID = props.data.data_id;
+        const response = await Request.Put("datas", props.data.data_id, {
+            customer_id: customerID,
+            name, email, phone
+        })
 
-        props.completeEditing({
-            data_id: dataID,
-            name
-        });
-        setName("");
+        props.completeEditing();
     }
     
     return <div className="w-1/2 mx-auto my-2 my-auto p-5 bg-white-transparent rounded">
@@ -31,7 +36,8 @@ function DataEdit(props) {
                 <h1 className="font-bold">Firma</h1>
                 <div>
                     <select className="w-full p-3 bg-white text-black" value={customerID} onChange={(e) => setCustomerID(e.target.value)}>
-                        { dummyCustomerList && dummyCustomerList.map((customer) => {
+                        <option value="0">Seçiniz</option>
+                        { customerList && customerList.map((customer) => {
                             return <option key={customer.customer_id} value={customer.customer_id}>{customer.name}</option>
                         })}
                     </select>
