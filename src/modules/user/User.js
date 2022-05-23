@@ -3,6 +3,7 @@ import UserAdd from './UserAdd';
 import UserEdit from './UserEdit';
 import { AUTH_LIST } from '../../helpers/StaticData';
 import Request from '../../helpers/Request';
+import Confirmation from '../../components/Confirmation';
 
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
@@ -15,6 +16,9 @@ function User(props) {
     const [showForm, setShowForm] = useState("add");
     const [userList, setUserList] = useState([]);
     const [userForEdit, setUserForEdit] = useState({});
+
+    const [deleteID, setDeleteID] = useState(0);
+    const [displayDeleteModal, setDisplayDeleteModal]= useState(false);
 
     useEffect(() => {
         getUserList();
@@ -48,20 +52,24 @@ function User(props) {
         getUserList();
     }
 
-    const completeDelete = async (userID) => {
-        const response = await Request.Delete("users", userID);
-        getUserList();
+
+    const responseDeleteModal = async (response) => {
+        if(response){
+            const response = await Request.Delete("users", deleteID);
+            getUserList();
+        }
+        setDisplayDeleteModal(false);
     }
 
     return (
         <div>
-            { showForm === "add" && 
+            { showForm === "add" &&
                 <UserAdd updateUserList={() => updateUserList()} />
             }
             {
                 showForm === "edit" &&
-                <UserEdit 
-                    data={userForEdit} 
+                <UserEdit
+                    data={userForEdit}
                     changeShowForm={(formName) => setShowForm(formName)}
                     completeEditing={() => completeEditing()}
                 />
@@ -94,7 +102,10 @@ function User(props) {
                                         </td>
                                         <td className="text-center border border-white py-1">
                                         <button className="text-red-500 text-2xl"
-                                            onClick={() => completeDelete(user.user_id)}><FaTrashAlt /></button>
+                                            onClick={() => {
+                                                setDeleteID(user.user_id)
+                                                setDisplayDeleteModal(true);
+                                            }}><FaTrashAlt /></button>
                                         </td>
                                     </tr>
                                 })
@@ -103,6 +114,13 @@ function User(props) {
                     </table>
                 </div>
             </div>
+            <Confirmation
+                display={displayDeleteModal}
+                changeDisplay={(val) => setDisplayDeleteModal(val)}
+                type="delete"
+                title=""
+                response={(val)=> responseDeleteModal(val)}
+            />
         </div>
     )
 }

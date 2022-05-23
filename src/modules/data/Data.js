@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import DataAdd from './DataAdd';
 import DataEdit from './DataEdit';
+import Confirmation from '../../components/Confirmation';
 
 import { FaEdit, FaTrashAlt, FaRegListAlt } from "react-icons/fa";
 import Request from '../../helpers/Request';
@@ -15,6 +16,9 @@ const Data = (props) => {
     const [showForm, setShowForm] = useState("add");
     const [dataList, setDataList] = useState([]);
     const [dataForEdit, setDataForEdit] = useState({});
+
+    const [deleteID, setDeleteID] = useState(0);
+    const [displayDeleteModal, setDisplayDeleteModal]= useState(false);
 
     useEffect(() => {
         getDataList();
@@ -40,9 +44,12 @@ const Data = (props) => {
         getDataList();
     }
 
-    const completeDelete = async (dataID) => {
-        const response = await Request.Delete("datas", dataID);
-        getDataList();
+    const responseDeleteModal = async (response) => {
+        if(response){
+            const response = await Request.Delete("datas", deleteID);
+            getDataList();
+        }
+        setDisplayDeleteModal(false);
     }
 
     const displayActivity = async (dataID) => {
@@ -52,22 +59,22 @@ const Data = (props) => {
 
     return (
         <div>
-            { selectedComponent == "activity" && 
+            { selectedComponent == "activity" &&
                 <Activity data_id={selectedDataID} />
             }
 
-            { selectedComponent == "data" && 
+            { selectedComponent == "data" &&
                 <div>
-                    {showForm === "add" && 
+                    {showForm === "add" &&
                         <DataAdd updateDataList={() => updateDataList()} />
                     }
-                    {showForm === "edit" && 
-                        <DataEdit data={dataForEdit} 
+                    {showForm === "edit" &&
+                        <DataEdit data={dataForEdit}
                             changeShowForm={(formName) => setShowForm(formName)}
                             completeEditing={() => completeEditing()}
                         />
                     }
-                    {dataList && dataList.length < 1 && 
+                    {dataList && dataList.length < 1 &&
                         <div>Görüntülenecek Müşteri Yok</div>
                     }
                     <div className="flex justify-center my-2 ">
@@ -102,7 +109,10 @@ const Data = (props) => {
                                                 </td>
                                                 <td className="text-center border border-white py-1">
                                                 <button className="text-red-500 text-2xl"
-                                                    onClick={() => completeDelete(data.data_id)}><FaTrashAlt /></button>
+                                                    onClick={() => {
+                                                        setDeleteID(data.data_id)
+                                                        setDisplayDeleteModal(true);
+                                                    }}><FaTrashAlt /></button>
                                                 </td>
                                             </tr>
                                         })
@@ -112,6 +122,13 @@ const Data = (props) => {
                         </div>
                     </div>
 
+                    <Confirmation
+                        display={displayDeleteModal}
+                        changeDisplay={(val) => setDisplayDeleteModal(val)}
+                        type="delete"
+                        title=""
+                        response={(val)=> responseDeleteModal(val)}
+                    />
                 </div>
             }
         </div>

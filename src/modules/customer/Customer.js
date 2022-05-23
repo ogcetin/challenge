@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import CustomerAdd from './CustomerAdd';
 import CustomerEdit from './CustomerEdit';
+import Confirmation from '../../components/Confirmation';
 
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import Request from '../../helpers/Request';
@@ -9,7 +10,10 @@ function Customer(props) {
     const [showForm, setShowForm] = useState("add");
     const [customerList, setCustomerList] = useState([]);
     const [customerDataForEdit, setCustomerDataForEdit] = useState({});
-    
+
+    const [deleteID, setDeleteID] = useState(0);
+    const [displayDeleteModal, setDisplayDeleteModal]= useState(false);
+
     useEffect(() => {
         getCustomerList()
     }, [props]);
@@ -19,7 +23,7 @@ function Customer(props) {
         setCustomerList(response);
         setShowForm("add");
     }
-    
+
     const updateCustomerList = () => {
         getCustomerList();
     }
@@ -34,24 +38,28 @@ function Customer(props) {
         getCustomerList();
     }
 
-    const completeDelete = async (customerID) => {
-        const response = await Request.Delete("customers", customerID);
-        getCustomerList();
+
+    const responseDeleteModal = async (response) => {
+        if(response){
+            const response = await Request.Delete("customers", deleteID);
+            getCustomerList();
+        }
+        setDisplayDeleteModal(false);
     }
 
     return (
         <div>
-            {showForm === "add" && 
+            {showForm === "add" &&
                 <CustomerAdd updateCustomerList={() => updateCustomerList()} />
             }
-            {showForm === "edit" && 
-                <CustomerEdit customerData={customerDataForEdit} 
+            {showForm === "edit" &&
+                <CustomerEdit customerData={customerDataForEdit}
                     changeShowForm={(formName) => setShowForm(formName)}
                     completeEditing={() => completeEditing()}
                 />
             }
-            
-            { customerList && customerList.length < 1 && 
+
+            { customerList && customerList.length < 1 &&
                 <div>Görüntülenecek Firma Yok</div>
             }
             <div className="flex justify-center my-2 ">
@@ -66,7 +74,7 @@ function Customer(props) {
                             </tr>
                         </thead>
                         <tbody>
-                        { customerList && customerList.length > 0 && 
+                        { customerList && customerList.length > 0 &&
                             customerList.map((customer, index) => {
                                 return <tr key={customer.customer_id}>
                                     <td className="text-center border border-white py-1">{customer.customer_id}</td>
@@ -77,7 +85,10 @@ function Customer(props) {
                                     </td>
                                     <td className="text-center border border-white py-1">
                                         <button className="text-red-500 text-2xl"
-                                            onClick={() => completeDelete(customer.customer_id)}><FaTrashAlt /></button>
+                                            onClick={() => {
+                                                setDeleteID(customer.customer_id)
+                                                setDisplayDeleteModal(true);
+                                            }}><FaTrashAlt /></button>
                                     </td>
                                 </tr>
                             })
@@ -86,6 +97,13 @@ function Customer(props) {
                     </table>
                 </div>
             </div>
+            <Confirmation
+                display={displayDeleteModal}
+                changeDisplay={(val) => setDisplayDeleteModal(val)}
+                type="delete"
+                title=""
+                response={(val)=> responseDeleteModal(val)}
+            />
         </div>
     )
 }
