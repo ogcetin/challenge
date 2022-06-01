@@ -4,13 +4,13 @@ import Request from '../../helpers/Request';
 function CustomerEdit(props) {
     const [name, setName] = useState(props.customerData.name);
 
-    const sendForm = async (e) => {   
+    const sendForm = async (e) => {
         e.preventDefault();
-        const response = await Request.Put("customers", props.customerData.customer_id, {name})
+        const response = await Request.Put("customers", props.customerData.id, {name})
         props.completeEditing();
         setName("");
     }
-    
+
     return <div className="w-1/2 mx-auto my-2 my-auto p-5 bg-white-transparent rounded">
         <form onSubmit={(e) => sendForm(e)}>
             <div className="p-2 rounded flex justify-center">

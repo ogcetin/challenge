@@ -29,7 +29,9 @@ function Customer(props) {
     }
 
     const startEditing = (customerID) => {
-        let selectedCustomerData = customerList.filter((customerObj) => customerObj.customer_id === customerID);
+        let selectedCustomerData = customerList.filter((customerObj) => customerObj.id === customerID);
+        console.log("SelectedCustomer", selectedCustomerData);
+
         setCustomerDataForEdit(selectedCustomerData[0])
         setShowForm("edit");
     }
@@ -60,43 +62,46 @@ function Customer(props) {
             }
 
             { customerList && customerList.length < 1 &&
-                <div>Görüntülenecek Firma Yok</div>
+                <div className="text-center p-5">Görüntülenecek Firma Yok</div>
             }
-            <div className="flex justify-center my-2 ">
-                <div className="w-1/2  rounded bg-white-transparent">
-                    <table className="table-auto p-2 w-full border-collapse border  border-slate-600">
-                        <thead>
-                            <tr>
-                                <th className="border border-white bg-slate-50">Firma ID</th>
-                                <th className="border border-white bg-slate-50">Firma Adı</th>
-                                <th className="border border-white bg-slate-50"></th>
-                                <th className="border border-white bg-slate-50"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        { customerList && customerList.length > 0 &&
-                            customerList.map((customer, index) => {
-                                return <tr key={customer.customer_id}>
-                                    <td className="text-center border border-white py-1">{customer.customer_id}</td>
-                                    <td className="text-center border border-white py-1">{customer.name}</td>
-                                    <td className="text-center border border-white py-1">
-                                        <button className="text-sky-500 text-2xl"
-                                            onClick={() => startEditing(customer.customer_id)}><FaEdit /></button>
-                                    </td>
-                                    <td className="text-center border border-white py-1">
-                                        <button className="text-red-500 text-2xl"
-                                            onClick={() => {
-                                                setDeleteID(customer.customer_id)
-                                                setDisplayDeleteModal(true);
-                                            }}><FaTrashAlt /></button>
-                                    </td>
+            {customerList && customerList.length > 0 &&
+                    <div className="flex justify-center my-2 ">
+                    <div className="w-1/2  rounded bg-white-transparent">
+                        <table className="table-auto p-2 w-full border-collapse border  border-slate-600">
+                            <thead>
+                                <tr>
+                                    <th className="border border-white bg-slate-50">Firma ID</th>
+                                    <th className="border border-white bg-slate-50">Firma Adı</th>
+                                    <th className="border border-white bg-slate-50"></th>
+                                    <th className="border border-white bg-slate-50"></th>
                                 </tr>
-                            })
-                        }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            { customerList && customerList.length > 0 &&
+                                customerList.map((customer, index) => {
+                                    return <tr key={customer.id}>
+                                        <td className="text-center border border-white py-1">{customer.id}</td>
+                                        <td className="text-center border border-white py-1">{customer.name}</td>
+                                        <td className="text-center border border-white py-1">
+                                            <button className="text-sky-500 text-2xl"
+                                                onClick={() => startEditing(customer.id)}><FaEdit /></button>
+                                        </td>
+                                        <td className="text-center border border-white py-1">
+                                            <button className="text-red-500 text-2xl"
+                                                onClick={() => {
+                                                    setDeleteID(customer.id)
+                                                    setDisplayDeleteModal(true);
+                                                }}><FaTrashAlt /></button>
+                                        </td>
+                                    </tr>
+                                })
+                            }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+            }
+
             <Confirmation
                 display={displayDeleteModal}
                 changeDisplay={(val) => setDisplayDeleteModal(val)}

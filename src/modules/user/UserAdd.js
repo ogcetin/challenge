@@ -14,8 +14,7 @@ function UserAdd(props) {
     useEffect(() => {
 
         (async () => {
-            const request = await fetch("http://127.0.0.1:8000/api/customers/");
-            const response = await request.json();
+            const response = await Request.Get("customers");
             console.log("Customer List", response);
             setCustomerList(response);
         })();
@@ -49,7 +48,7 @@ function UserAdd(props) {
                         <select className="w-full p-3 bg-white text-black" onChange={(e) => setCustomerID(e.target.value)}>
                             <option value="0">Seçiniz</option>
                             { customerList && customerList.length > 0 && customerList.map((customer) => {
-                                return <option key={customer.customer_id} value={customer.customer_id}>{customer.name}</option>
+                                return <option key={customer.id} value={customer.id}>{customer.name}</option>
                             })}
                         </select>
                     </div>

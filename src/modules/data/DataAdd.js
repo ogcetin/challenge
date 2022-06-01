@@ -12,13 +12,13 @@ const DataAdd = (props) => {
     useEffect(() => {
         getCustomerList();
     }, [props])
-    
+
     const getCustomerList = async () => {
         const response = await Request.Get("customers");
         setCustomerList(response);
     }
 
-    const sendForm = async (e) => {   
+    const sendForm = async (e) => {
         e.preventDefault();
 
         const response = await Request.Post("datas", {
@@ -30,7 +30,7 @@ const DataAdd = (props) => {
 
         props.updateDataList();
     }
-    
+
     return <div className="w-1/2 mx-auto my-2 my-auto p-5 bg-white-transparent rounded">
         <form onSubmit={(e) => sendForm(e)}>
             <div className="p-2 rounded flex justify-center">
@@ -42,7 +42,7 @@ const DataAdd = (props) => {
                     <select className="w-full p-3 bg-white text-black" onChange={(e) => setCustomerID(e.target.value)}>
                         <option value="0">Seçiniz</option>
                         { customerList && customerList.map((customer) => {
-                            return <option key={customer.customer_id} value={customer.customer_id}>{customer.name}</option>
+                            return <option key={customer.id} value={customer.id}>{customer.name}</option>
                         })}
                     </select>
                 </div>

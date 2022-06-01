@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Session from '../../helpers/Session';
+import Request from '../../helpers/Request';
 
 function UserLogin(props) {
     const [email, setEmail] = useState('');
@@ -6,25 +8,16 @@ function UserLogin(props) {
 
     async function sendLogin(e){
         e.preventDefault();
-        props.changeLoginStatus(true);
 
-
-        /*
-
-        const request = await fetch("http://127.0.0.1:8000/users/login",{
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username: username,
-                password: password
-            })
+        const response = await Request.Login("token", {
+            email,
+            password
         });
 
-        const response = request.json();
-        console.log(response);
-        */
+        if(response.access.length > 0){
+            Session.set("token", response.access);
+            props.changeLoginStatus(true);
+        }
     }
 
     return <div className="w-1/2 mx-auto my-auto p-5">

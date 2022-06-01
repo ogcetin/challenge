@@ -26,7 +26,17 @@ const Data = (props) => {
 
     const getDataList = async () => {
         const response  = await Request.Get("datas");
-        setDataList(response);
+
+        const customersResponse = await Request.Get("customers");
+        const edited = response.map(data => {
+
+            const customersFiltered = customersResponse.filter(customer => customer.id === data.customer_id);
+            data.customer_converted = customersFiltered[0]['name'];
+
+            return data;
+        })
+
+        setDataList(edited);
         setShowForm("add");
     };
 
@@ -74,16 +84,15 @@ const Data = (props) => {
                             completeEditing={() => completeEditing()}
                         />
                     }
-                    {dataList && dataList.length < 1 &&
-                        <div>Görüntülenecek Müşteri Yok</div>
-                    }
-                    <div className="flex justify-center my-2 ">
+                    {dataList && dataList.length < 1 && <div className="text-center p-5">Görüntülenecek Data Yok</div>}
+                    {dataList && dataList.length > 0 &&
+                        <div className="flex justify-center my-2 ">
                         <div className="w-1/2  rounded bg-white-transparent">
                             <table className="table-auto w-full border p-2 border-collapse border-slate-600">
                                 <thead>
                                     <tr>
                                         <th className="border border-white bg-slate-50">Müşteri ID</th>
-                                        <th className="border border-white bg-slate-50">Firma ID</th>
+                                        <th className="border border-white bg-slate-50">Firma</th>
                                         <th className="border border-white bg-slate-50">Müşteri Adı</th>
                                         <th className="border border-white bg-slate-50">Telefon</th>
                                         <th className="border border-white bg-slate-50">E-Posta Adresi</th>
@@ -94,23 +103,23 @@ const Data = (props) => {
                                     {dataList && dataList.length > 0 &&
                                         dataList.map((data, index) => {
                                             return <tr key={index}>
-                                                <td className="text-center border border-white py-1">{data.data_id}</td>
-                                                <td className="text-center border border-white py-1">{data.customer_id}</td>
+                                                <td className="text-center border border-white py-1">{data.id}</td>
+                                                <td className="text-center border border-white py-1">{data.customer_converted}</td>
                                                 <td className="text-center border border-white py-1">{data.name}</td>
                                                 <td className="text-center border border-white py-1">{data.phone}</td>
                                                 <td className="text-center border border-white py-1">{data.email}</td>
                                                 <td className="text-center border border-white py-1">
                                                     <button className="text-green-500 text-2xl"
-                                                        onClick={() => displayActivity(data.data_id)}><FaRegListAlt /></button>
+                                                        onClick={() => displayActivity(data.id)}><FaRegListAlt /></button>
                                                 </td>
                                                 <td className="text-center border border-white py-1">
                                                     <button className="text-sky-500 text-2xl"
-                                                        onClick={() => startEditing(data.data_id)}><FaEdit /></button>
+                                                        onClick={() => startEditing(data.id)}><FaEdit /></button>
                                                 </td>
                                                 <td className="text-center border border-white py-1">
                                                 <button className="text-red-500 text-2xl"
                                                     onClick={() => {
-                                                        setDeleteID(data.data_id)
+                                                        setDeleteID(data.id)
                                                         setDisplayDeleteModal(true);
                                                     }}><FaTrashAlt /></button>
                                                 </td>
@@ -121,6 +130,8 @@ const Data = (props) => {
                             </table>
                         </div>
                     </div>
+                    }
+
 
                     <Confirmation
                         display={displayDeleteModal}

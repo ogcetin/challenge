@@ -40,11 +40,6 @@ const Menu = (props) => {
                             Müşteri İşlemleri
                         </a>
                     </li>
-                    <li className="py-2">
-                        <a href="#" onClick={() => changeActiveMenu("activity")} className={(menuActive === "activity")?"font-bold":""}>
-                            Aktivite İşlemleri
-                        </a>
-                    </li>
                 </ul>
             </nav>
         </div>
